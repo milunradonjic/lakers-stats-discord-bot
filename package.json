@@ -1,0 +1,16 @@
+{
+  "name": "lal-daily-stats",
+  "version": "1.0.0",
+  "description": "Get Stats from Lakers games daily",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Milun Radonjic <milun.radonjic95@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.2.0"
+  }
+}
