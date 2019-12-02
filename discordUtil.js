@@ -10,14 +10,17 @@ const GUILD_ID = process.env.GUILD_ID;
 const CHANNEL_ID = process.env.CHANNEL_ID;
 const NO_GAME_MESSAGE = 'No game!';
 
+async function deleteMessage(message) {
+    if (dateUtil.getNumberOfDaysBetweenTwoDates(dateUtil.getToday(), message.createdAt) >= 0) {
+        await message.delete();
+    }
+}
+
 async function deleteMessages(messages) {
     // delete messages older then 7 days
     console.log('Deleting messages older then 7 days...');
-    await Promise.all(messages.forEach(async message => {
-        if (dateUtil.getNumberOfDaysBetweenTwoDates(dateUtil.getToday(), message.createdAt) >= 7) {
-            await message.delete();
-        }
-    }));
+    let promises = messages.map(deleteMessage);
+    await Promise.all(promises);
     bot.destroy();
 }
 
@@ -25,21 +28,23 @@ const deleteMessagesFromChannel = channel => channel.fetchMessages().then(messag
 
 const sendMessages = (result, homeStats, visitorStats) => {
     console.log('login...');
-    bot.login(TOKEN).then(() => {
+    bot.login(TOKEN).then(async () => {
         console.log("I am ready");
         const guild = bot.guilds.get(GUILD_ID);
         if(guild && guild.channels.get(CHANNEL_ID)){
             const channel = guild.channels.get(CHANNEL_ID);
             if (result !== NO_GAME_MESSAGE) {
-                channel.send(result)
-                .then(() => channel.send(homeStats))
-                .then(() => channel.send(visitorStats))
-                .then(() => deleteMessagesFromChannel(channel));
-                // .then(() => bot.destroy());
-            } else {
-                channel.send(result)
+                // channel.send(result)
+                // .then(() => channel.send(homeStats))
+                // .then(() => channel.send(visitorStats))
                 // .then(() => deleteMessagesFromChannel(channel));
-                .then(() => bot.destroy());
+                await channel.send(result)
+                await channel.send(homeStats)
+                await channel.send(visitorStats)
+                deleteMessagesFromChannel(channel);
+            } else {
+                await channel.send(result);
+                deleteMessagesFromChannel(channel);
             }
         } else {
             console.log("nope");
