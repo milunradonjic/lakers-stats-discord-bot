@@ -10,14 +10,15 @@ const GUILD_ID = process.env.GUILD_ID;
 const CHANNEL_ID = process.env.CHANNEL_ID;
 const NO_GAME_MESSAGE = 'No game!';
 
-const deleteMessages = messages => {
+async function deleteMessages(messages) {
     // delete messages older then 7 days
     console.log('Deleting messages older then 7 days...');
-    messages.forEach(message => {
+    await Promise.all(messages.forEach(async message => {
         if (dateUtil.getNumberOfDaysBetweenTwoDates(dateUtil.getToday(), message.createdAt) >= 7) {
-            message.delete();
+            await message.delete();
         }
-    });
+    }));
+    bot.destroy();
 }
 
 const deleteMessagesFromChannel = channel => channel.fetchMessages().then(messages => deleteMessages(messages));
@@ -33,8 +34,8 @@ const sendMessages = (result, homeStats, visitorStats) => {
                 channel.send(result)
                 .then(() => channel.send(homeStats))
                 .then(() => channel.send(visitorStats))
-                // .then(() => deleteMessagesFromChannel(channel));
-                .then(() => bot.destroy());
+                .then(() => deleteMessagesFromChannel(channel));
+                // .then(() => bot.destroy());
             } else {
                 channel.send(result)
                 // .then(() => deleteMessagesFromChannel(channel));
