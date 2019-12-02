@@ -23,6 +23,7 @@ const deleteMessages = messages => {
 const deleteMessagesFromChannel = channel => channel.fetchMessages().then(messages => deleteMessages(messages));
 
 const sendMessages = (result, homeStats, visitorStats) => {
+    console.log('login...');
     bot.login(TOKEN).then(() => {
         console.log("I am ready");
         const guild = bot.guilds.get(GUILD_ID);
