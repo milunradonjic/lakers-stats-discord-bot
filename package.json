@@ -9,7 +9,7 @@
   "author": "Milun Radonjic <milun.radonjic95@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0"
   }
